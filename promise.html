@@ -60,8 +60,9 @@
       console.log(res)
     }).catch(function (error) {
       console.log(error)
+    }).finally(function(){
+      console.log('finally函数，无论失败还是成功都会执行')
     })
-
     // 场景二：getData3的执行依赖getData1和getData2
     //Promise的all方法，等数组中的所有promise对象都完成执行
     Promise.all([getData1(), getData2()]).then(function ([ResultJson1, ResultJson2]) {

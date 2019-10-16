@@ -66,8 +66,8 @@ b **= 7
 console.log(a === Math.pow(7,12)) // true
 console.log(b === Math.pow(2,7)) // true
 ```
-
 # es8
+## 具体地址 [url link](https://juejin.im/post/5c02b106f265da61764aa0c1) 
 
 ## 异步函数
 
@@ -106,42 +106,45 @@ function* helloWorldGenerator() {
 var hw = helloWorldGenerator();
 ```
 
-```
-var Ajax = {
-  get: function (url, fn) {
-      // XMLHttpRequest对象用于在后台与服务器交换数据
-      var xhr = new XMLHttpRequest();
-      //每当readyState改变时就会触发onreadystatechange函数
-      //0: 请求未初始化
-      //1: 服务器连接已建立
-      //2: 请求已接收
-      //3: 请求处理中
-      //4: 请求已完成，且响应已就绪
-      xhr.open('GET', url, true)
-      xhr.onreadystatechange = function () {
-          //readyStatus == 4说明请求已经完成
-          if(xhr.readyState == 4 && xhr.status ==200) {
-              //从服务器获得数据
-              fn.call(this, xhr.responseText);
-          }
-      };
-      //发送数据
-      xhr.send();
-  },
-  // datat应为'a=a1&b=b1'这种字符串格式，在jq里如果data为对象会自动将对象转成这种字符串格式
-  post: function (url, data, fn) {
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      // 添加http头，发送信息至服务器时内容编码类型
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.onreadystatechange = function() {
-          if (xhr.readyState == 4 && (xhr.status == 200 || xhr.status == 304)) {
-              fn.call(this, xhr.responseText);
-          }
-      };
-      //发送数据
-      xhr.send(data);
-  }
+**具体代码在async.html中，感觉还是promise更好用，promise代码在promise.html中**
 
-}
+## Object.entries()，Object.values()
+
+作用：将一个对象中可枚举属性的键名和键值按照二维数组的方式返回。
+
+若对象是数组，则会将数组的下标作为键值返回
 ```
+Object.entries({ one: 1, two: 2 })    //[['one', 1], ['two', 2]]
+Object.entries([1, 2])                //[['0', 1], ['1', 2]]
+
+
+let a = { f1: 'hi', f2: 'leo'};
+Object.values(a); // ['hi', 'leo'] //["hi", "leo"]
+```
+如果参数不是对象，则返回空数组：
+```
+Object.values(10);   // []
+Object.values(true); // []
+```
+用途1：遍历对象属性
+```
+let a = { f1: 'hi', f2: 'leo'};
+for (let [k, v] of Object.entries(a)){
+    console.log(
+        `${JSON.stringfy(k)}:${JSON.stringfy(v)}`
+    )
+}
+// 'f1':'hi'
+// 'f2':'leo'
+```
+
+用途2：将对象转为真正的Map结构。
+```
+let a = { f1: 'hi', f2: 'leo'};
+let map = new Map(Object.entries(a));
+```
+
+## Object.getOwnPropertyDescriptors()
+
+引入这个方法，主要是为了解决Object.assign()无法正确拷贝get属性和set属性的问题。(一脸懵逼)
+
