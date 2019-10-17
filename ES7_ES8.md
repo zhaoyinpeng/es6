@@ -125,6 +125,7 @@ Object.values(a); // ['hi', 'leo'] //["hi", "leo"]
 ```
 Object.values(10);   // []
 Object.values(true); // []
+Object.values('123'); //["1", "2", "3"]
 ```
 用途1：遍历对象属性
 ```
@@ -148,3 +149,27 @@ let map = new Map(Object.entries(a));
 
 引入这个方法，主要是为了解决Object.assign()无法正确拷贝get属性和set属性的问题。(一脸懵逼)
 
+## 字符串填充 padStart和padEnd
+用来为字符串填充特定字符串，并且都有两个参数：字符串目标长度和填充字段，第二个参数可选，默认空格
+```
+'es8'.padStart(2);          // 'es8'
+'es8'.padStart(5);          // '  es8'
+'es8'.padStart(6, 'woof');  // 'wooes8'
+'es8'.padStart(14, 'wow');  // 'wowwowwowwoes8'
+'es8'.padStart(7, '0');     // '0000es8'
+
+'es8'.padEnd(2);            // 'es8'
+'es8'.padEnd(5);            // 'es8  '
+'es8'.padEnd(6, 'woof');    // 'es8woo'
+'es8'.padEnd(14, 'wow');    // 'es8wowwowwowwo'
+'es8'.padEnd(7, '6');       // 'es86666'
+```
+
+## 函数参数列表与调用中的尾部逗号
+```
+这样不报错
+function es8(var1, var2, var3,) {
+  // ...
+}
+es8(10, 20, 30,);
+```

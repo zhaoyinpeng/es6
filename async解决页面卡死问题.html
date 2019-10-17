@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .c {
+      width: 150px;
+      height: 150px;
+      border: 1px solid #fff;
+      margin: 50px;
+      text-align: center;
+      line-height: 150px;
+      background: skyblue;
+      animation: translateDiv 3s linear 1s infinite normal forwards;
+    }
+
+    @keyframes translateDiv {
+      from {
+        transform: translate(0, 0);
+      }
+
+      to {
+        width: 200px;
+        transform: translate(200px, -50px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="a">async计算</div>
+  <div class="d">webworder计算</div>
+  <div class="b"></div>
+  <div class="c"></div>
+  <script>
+    //使用async无法解决大量数据计算
+    let $a = document.getElementsByClassName('a')[0]
+    let $b = document.getElementsByClassName('b')[0]
+    let $d = document.getElementsByClassName('d')[0]
+    let a = () => {
+      console.time('testForEach');
+      var jobData = [];//假设是一个数组。里面有1000万个数据。
+      for (let index = 0; index < 100000000; index++) {
+        const element = Math.random() * 100 + 20;
+        jobData.push(element)
+      }
+      let result = 0
+      jobData.forEach((element) => {
+        result += element
+      })
+      $b.innerHTML = '结果：' + result + ' 时间：' + console.timeEnd('testForEach');
+    }
+    function test1() {
+      return new Promise((resolve, reject) => {
+        window.setTimeout(() => {
+          a()
+          resolve(1)
+        }, 10)
+      })
+    }
+
+    async function asyncFun() {
+      let num = await test1();
+      console.log('asyncFun第一次', num);
+      return { num }
+    }
+    $a.onclick = (() => {
+      asyncFun().then(res => {
+        console.log(res)
+      }).catch(function (error) {
+        console.log(error)
+      })
+    })
+    
+    $d.onclick = (() => {
+      let a = Math.random()
+      console.log(a)
+      worker.postMessage('hello worker!' + a);
+    })
+    
+    if (window.Worker) {
+      // 主线程通过new 来开启子线程，Worker构造函数的参数是一个脚本文件，由于Worker不能读取本地文件，因此该文件必须是来源于网络
+      // 本地通过搭建临时服务来读取脚本文件，但是在线上环境需要填写网络路径，且必须是同源
+      var worker = new Worker('./webWorker.js');
+    } else {
+      console.log('浏览器不支持worker子线程。。。');
+    }
+    worker.addEventListener('message', function (res) {
+      console.log('收到子线程的消息：' + JSON.stringify(res.data));
+      // 关闭worker线程
+      worker.terminate();
+    })
+  </script>
+</body>
+
+</html>
